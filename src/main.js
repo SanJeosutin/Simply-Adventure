@@ -1,6 +1,3 @@
-basil = new window.Basil({storages: ['local'], expireDays: 31});
-
-
 /*FUNCTIONS*/
 $.ajax({
     url: 'src/functions/timer.js',

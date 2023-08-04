@@ -1,11 +1,11 @@
 function updateIdleTimerValue(value) {
     $('#idleTimeDisplay').text(value);
-    basil.set('idleTimeTotal', value);
+    Cookies.set('idleTimeTotal', value, {expires: 30, path: '/home/'});
 }
 
 function startIdleTimer() {
     //idleTotal timer
-    var idleTimerValue = parseInt(basil.get('idleTimeTotal')) || 0;
+    var idleTimerValue = parseInt(Cookies.get('idleTimeTotal')) || 0;
 
     updateIdleTimerValue(idleTimerValue);
 

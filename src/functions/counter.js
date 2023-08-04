@@ -1,25 +1,25 @@
 function updateCounterValue(value) {
     $('#counterDisplay').text(value);
-    basil.set('money', value);
+    Cookies.set('money', value, {expires: 30, path: '/home/'});
 }
 
 function updateCountdownValue(value) {
     $('#intervalDisplay').text(value);
-    basil.set('interval', value);
+    Cookies.set('interval', value, {expires: 30, path: '/home/'});
 }
 
 function startCounter() {
     //money counter
-    var counterValue = parseInt(basil.get('money')) || 0;
+    var counterValue = parseInt(Cookies.get('money')) || 0;
     //interval counter
-    var intervalValue = parseInt(basil.get('interval')) || 5;
+    var intervalValue = parseInt(Cookies.get('interval')) || 5;
 
     updateCounterValue(counterValue);
     updateCountdownValue(intervalValue);
 
     setInterval(() => {
-        if (intervalValue < 0) {
-            intervalValue = parseInt(basil.get('interval')) || 5;
+        if (intervalValue <= 1) {
+            intervalValue = parseInt(Cookies.get('interval')) || 5;
         } else {
             intervalValue--;
         }
