@@ -1,6 +1,6 @@
 function updateIdleTimerValue(value) {
     $('#idleTimeDisplay').text(value);
-    Cookies.set('idleTimeTotal', value, {expires: 30, path: '/home/'});
+    Cookies.set('idleTimeTotal', value, {expires: 30, path: '/'});
 }
 
 function startIdleTimer() {

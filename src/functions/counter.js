@@ -1,13 +1,3 @@
-function updateCounterValue(value) {
-    $('#counterDisplay').text(value);
-    Cookies.set('money', value, {expires: 30, path: '/home/'});
-}
-
-function updateCountdownValue(value) {
-    $('#intervalDisplay').text(value);
-    Cookies.set('interval', value, {expires: 30, path: '/home/'});
-}
-
 function startCounter() {
     //money counter
     var counterValue = parseInt(Cookies.get('money')) || 0;
@@ -31,4 +21,14 @@ function startCounter() {
         counterValue++;
         updateCounterValue(counterValue);
     }, 5000);
+}
+
+function updateCounterValue(value) {
+    $('#counterDisplay').text(value);
+    Cookies.set('money', value, {expires: 30, path: '/'});
+}
+
+function updateCountdownValue(value) {
+    $('#intervalDisplay').text(value);
+    Cookies.set('interval', value, {expires: 30, path: '/'});
 }
