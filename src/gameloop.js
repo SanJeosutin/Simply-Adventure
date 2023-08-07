@@ -5,6 +5,7 @@
 
 "use strict";
 
+
 const STOPPED = Symbol.for("@@gameloop/stopped");
 const PAUSED = Symbol.for("@@gameloop/paused");
 const RUNNING = Symbol.for("@@gameloop/running");
