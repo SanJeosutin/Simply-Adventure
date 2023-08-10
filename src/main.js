@@ -1,10 +1,12 @@
 import GameLoop from './gameloop.js';
+import Button from './components/UI/button.ui.js';
 
 function lerp(v1, v2, p) {
     return v1 * (1 - p) + v2 * p;
 }
 
 const loop = new GameLoop();
+const btn = new Button();
 
 const stats = {
     general: {
@@ -16,7 +18,7 @@ const stats = {
     }
 };
 
-const createButton = {
+const createButtonID = {
     actions: {
         scavenge: '#action-scavenge',
         craft: '#action-craft',
@@ -24,7 +26,7 @@ const createButton = {
     },
 };
 
-const displayTotal = {
+const displayTotalID = {
     items: {
         materials: {
             pebble: '#total-pebble',
@@ -43,27 +45,27 @@ let lastInterval = 0;
 
 
 $(document).ready(() => {
-    $('#actions').on('click', createButton.actions.scavenge, () => {
+    $('#action').on('click', createButtonID.actions.scavenge, () => {
         stats.inventory.pebble += 1;
         console.log("adding pebble");
 
-        $(createButton.actions.scavenge).prop('disabled', true);
+        $(createButtonID.actions.scavenge).prop('disabled', true);
         setTimeout(() => {
-            $(createButton.actions.scavenge).prop('disabled', false);
+            $(createButtonID.actions.scavenge).prop('disabled', false);
             console.log('scavenging');
         }, 1000);
     });
 
-    $('#actions').on("click", createButton.actions.craft, () => {
+    $('#action').on("click", createButtonID.actions.craft, () => {
         if (stats.inventory.pebble >= 5) {
             stats.inventory.sword += 1;
             stats.inventory.pebble -= 5;
             console.log("crafting sword");
 
-            $(createButton.actions.craft).prop('disabled', true);
+            $(createButtonID.actions.craft).prop('disabled', true);
 
             setTimeout(() => {
-                $(createButton.actions.craft).prop('disabled', false);
+                $(createButtonID.actions.craft).prop('disabled', false);
                 console.log('Crafting');
             }, 3000);
         } else {
@@ -88,7 +90,7 @@ $(document).ready(() => {
             }
         };
 
-        if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotal.items.materials.pebble).length) {
+        if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.pebble).length) {
             $('#display-inventory').append(
                 `<tr>
                     <th class="row">Pebbles</th>
@@ -97,33 +99,18 @@ $(document).ready(() => {
             );
         }
 
-        if (iStats.inventory.pebble >= 5 && !$('#actions').find(createButton.actions.craft).length) {
-            $('#actions').append(
-                $(document.createElement('createButton')).prop({
-                    type: 'createButton',
-                    innerHTML: 'Craft',
-                    class: 'btn btn-sm btn-dark',
-                    id: 'action-craft'
-                })
-            );
+        if (iStats.inventory.pebble >= 5 && !$('#action').find(createButtonID.actions.craft).length) {
+            btn.create('action', 'craft');
         }
 
-        if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotal.items.weapons.sword).length) {
+        if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {
             $('#display-inventory').append(
                 `<tr>
                     <th class="row">sword</th>
                     <td id="total-sword"></td>
                 </tr>`
             );
-
-            $('#actions').append(
-                $(document.createElement('createButton')).prop({
-                    type: 'createButton',
-                    innerHTML: 'Attack',
-                    class: 'btn btn-sm btn-dark',
-                    id: 'action-attack'
-                })
-            );
+            btn.create('action', 'attack');
         }
 
         $('#total-pebble').text(stats.inventory.pebble.toFixed(0));
