@@ -1,4 +1,5 @@
-import GameLoop from './gameloop.js';
+import GameLoop from './game/mechanics/gameloop.js';
+import Display from './components/UI/display.ui.js';
 import Button from './components/UI/button.ui.js';
 
 function lerp(v1, v2, p) {
@@ -6,7 +7,9 @@ function lerp(v1, v2, p) {
 }
 
 const loop = new GameLoop();
+
 const btn = new Button();
+const display = new Display();
 
 const stats = {
     general: {
@@ -91,12 +94,8 @@ $(document).ready(() => {
         };
 
         if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.pebble).length) {
-            $('#display-inventory').append(
-                `<tr>
-                    <th class="row">Pebbles</th>
-                    <td id="total-pebble"></td>
-                </tr>`
-            );
+            display.create('display-inventory', 'pebble');
+            
         }
 
         if (iStats.inventory.pebble >= 5 && !$('#action').find(createButtonID.actions.craft).length) {
@@ -104,12 +103,7 @@ $(document).ready(() => {
         }
 
         if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {
-            $('#display-inventory').append(
-                `<tr>
-                    <th class="row">sword</th>
-                    <td id="total-sword"></td>
-                </tr>`
-            );
+            display.create('display-inventory', 'sword');
             btn.create('action', 'attack');
         }
 
