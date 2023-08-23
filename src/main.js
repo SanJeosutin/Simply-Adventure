@@ -25,6 +25,7 @@ const stats = {
             string: 0,
             rope: 0,
             map: 0,
+            charcoal: 0,
         },
         tools: {
             basic_spear: 0,
@@ -37,8 +38,6 @@ const stats = {
             camp_fire: 0,
             trap: 0,
         }
-
-
     }
 };
 
@@ -54,6 +53,16 @@ const displayTotalID = {
     items: {
         materials: {
             pebble: '#total-pebble',
+            straw: '#total-straw',
+            stick: '#total-stick',
+            berry: '#total-berry',
+            leaf: '#total-leaf',
+            string: '#total-string',
+            rope: '#total-rope',
+            map: '#total-map',
+            charcoal: '#total-charcoal',
+        
+            
         },
         weapons: {
             sword: '#total-sword',
@@ -69,20 +78,16 @@ let lastInterval = 0;
 
 $(document).ready(() => {
     $('#action').on('click', createButtonID.actions.scavenge, () => {
-        stats.inventory.items.pebble
-
-        stats.inventory.straw += Math.random() * 6;
-        stats.inventory.stick += Math.random() * 6;
-        stats.inventory.pebble += Math.random() * 6;
-        stats.inventory.berry += Math.random() * 6;
-        stats.inventory.leaf += Math.random() * 6;
-        
-        console.log("Scavenging items.");
+        stats.inventory.items.straw += Math.random(1) * 6;
+        stats.inventory.items.stick += Math.random(1) * 6;
+        stats.inventory.items.pebble += Math.random(1) * 6;
+        stats.inventory.items.berry += Math.random(1) * 6;
+        stats.inventory.items.leaf += Math.random(1) * 6;
 
         $(createButtonID.actions.scavenge).prop('disabled', true);
         setTimeout(() => {
             $(createButtonID.actions.scavenge).prop('disabled', false);
-            console.log('scavenging');
+            console.log('scavenging...');
         }, 1000);
     });
 
@@ -107,22 +112,69 @@ $(document).ready(() => {
 
 
     loop.onUpdate = (dt, t) => {
-        prevStats.inventory.pebble = stats.inventory.pebble;
-        prevStats.inventory.sword = stats.inventory.sword;
+        prevStats.inventory.items.pebble = stats.inventory.items.pebble;
+        prevStats.inventory.items.straw = stats.inventory.items.straw;
+        prevStats.inventory.items.stick = stats.inventory.items.stick;
+        prevStats.inventory.items.berry = stats.inventory.items.berry;
+        prevStats.inventory.items.leaf = stats.inventory.items.leaf;
+        prevStats.inventory.items.string = stats.inventory.items.string;
+        prevStats.inventory.items.rope = stats.inventory.items.rope;
+        prevStats.inventory.items.map = stats.inventory.items.map;
+        prevStats.inventory.items.charcoal = stats.inventory.items.charcoal;
     };
 
 
     loop.onRender = (i) => {
         const iStats = {
             inventory: {
-                pebble: lerp(prevStats.inventory.pebble, stats.inventory.pebble, i),
-                sword: lerp(prevStats.inventory.sword, stats.inventory.sword, i),
+                pebble: lerp(prevStats.inventory.items.pebble, stats.inventory.items.pebble, i),
+                straw: lerp(prevStats.inventory.items.straw, stats.inventory.items.straw, i),
+                stick: lerp(prevStats.inventory.items.stick, stats.inventory.items.stick, i),
+                berry: lerp(prevStats.inventory.items.berry, stats.inventory.items.berry, i),
+                leaf: lerp(prevStats.inventory.items.leaf, stats.inventory.items.leaf, i),
+                string: lerp(prevStats.inventory.items.string, stats.inventory.items.string, i),
+                rope: lerp(prevStats.inventory.items.rope, stats.inventory.items.rope, i),
+                map: lerp(prevStats.inventory.items.map, stats.inventory.items.map, i),
+                charcoal: lerp(prevStats.inventory.items.charcoal, stats.inventory.items.charcoal, i),
             }
         };
 
         if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.pebble).length) {
             display.create('display-inventory', 'pebble');
         }
+
+        if (iStats.inventory.straw >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.straw).length) {
+            display.create('display-inventory', 'straw');
+        }
+
+        if (iStats.inventory.stick >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.stick).length) {
+            display.create('display-inventory', 'stick');
+        }
+
+        if (iStats.inventory.berry >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.berry).length) {
+            display.create('display-inventory', 'berry');
+        }
+
+        if (iStats.inventory.leaf >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.leaf).length) {
+            display.create('display-inventory', 'leaf');
+        }
+
+        if (iStats.inventory.string >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.string).length) {
+            display.create('display-inventory', 'string');
+        }
+
+        if (iStats.inventory.rope >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.rope).length) {
+            display.create('display-inventory', 'rope');
+        }
+
+        if (iStats.inventory.map >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.map).length) {
+            display.create('display-inventory', 'map');
+        }
+
+        if (iStats.inventory.charcoal >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.charcoal).length) {
+            display.create('display-inventory', 'charcoal');
+        }
+
 
         if (iStats.inventory.pebble >= 5 && !$('#action').find(createButtonID.actions.craft).length) {
             btn.create('action', 'craft');
@@ -133,8 +185,15 @@ $(document).ready(() => {
             btn.create('action', 'attack');
         }
 
-        $('#total-pebble').text(stats.inventory.pebble.toFixed(0));
-        $('#total-sword').text(stats.inventory.sword.toFixed(0));
+        $('#total-pebble').text(stats.inventory.items.pebble.toFixed(0));
+        $('#total-straw').text(stats.inventory.items.straw.toFixed(0));
+        $('#total-stick').text(stats.inventory.items.stick.toFixed(0));
+        $('#total-berry').text(stats.inventory.items.berry.toFixed(0));
+        $('#total-leaf').text(stats.inventory.items.leaf.toFixed(0));
+        $('#total-string').text(stats.inventory.items.string.toFixed(0));
+        $('#total-rope').text(stats.inventory.items.rope.toFixed(0));
+        $('#total-map').text(stats.inventory.items.map.toFixed(0));
+        $('#total-charcoal').text(stats.inventory.items.charcoal.toFixed(0));
     };
 
     $('#current-version').text(stats.general.gameVersion);
