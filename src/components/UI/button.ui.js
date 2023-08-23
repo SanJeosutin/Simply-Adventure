@@ -5,14 +5,14 @@ export default class Button {
         this.btnProperties = {
             btnName: 'A Button',
             btnID: 'UI' + '-' + this.btnName,
-            btnClass: 'btn btn-sm btn-dark',
+            btnClass: 'btn btn-sm btn-dark m-2',
             timeout: 500,
 
             ...btnProperties
         }
     }
 
-    create(btnLocation, btnName, btnTimeout = 500, btnClass = 'btn btn-sm btn-dark') {
+    create(btnLocation, btnName, btnTimeout = 500, btnClass = 'btn btn-sm btn-dark m-2') {
         this.btnProperties = {
             btnName: btnName.charAt(0).toUpperCase() + btnName.slice(1),
             btnID: btnLocation + '-' + btnName,

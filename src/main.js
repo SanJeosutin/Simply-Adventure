@@ -16,8 +16,29 @@ const stats = {
         gameVersion: 'EXPERIMENTAL - 0.0.1',
     },
     inventory: {
-        pebble: 0,
-        sword: 0,
+        items: {
+            pebble: 0,
+            straw: 0,
+            stick: 0,
+            berry: 0,
+            leaf: 0,
+            string: 0,
+            rope: 0,
+            map: 0,
+        },
+        tools: {
+            basic_spear: 0,
+            basic_knife: 0,
+        },
+        buildings: {
+
+        },
+        furnitures: {
+            camp_fire: 0,
+            trap: 0,
+        }
+
+
     }
 };
 
@@ -41,7 +62,6 @@ const displayTotalID = {
 }
 
 
-
 let prevStats = { ...stats };
 
 let lastInterval = 0;
@@ -49,8 +69,15 @@ let lastInterval = 0;
 
 $(document).ready(() => {
     $('#action').on('click', createButtonID.actions.scavenge, () => {
-        stats.inventory.pebble += 1;
-        console.log("adding pebble");
+        stats.inventory.items.pebble
+
+        stats.inventory.straw += Math.random() * 6;
+        stats.inventory.stick += Math.random() * 6;
+        stats.inventory.pebble += Math.random() * 6;
+        stats.inventory.berry += Math.random() * 6;
+        stats.inventory.leaf += Math.random() * 6;
+        
+        console.log("Scavenging items.");
 
         $(createButtonID.actions.scavenge).prop('disabled', true);
         setTimeout(() => {
@@ -95,7 +122,6 @@ $(document).ready(() => {
 
         if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.pebble).length) {
             display.create('display-inventory', 'pebble');
-            
         }
 
         if (iStats.inventory.pebble >= 5 && !$('#action').find(createButtonID.actions.craft).length) {
@@ -114,6 +140,5 @@ $(document).ready(() => {
     $('#current-version').text(stats.general.gameVersion);
 
     loop.start();
-
 });
 
