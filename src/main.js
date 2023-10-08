@@ -44,7 +44,9 @@ const stats = {
 const createButtonID = {
     actions: {
         scavenge: '#action-scavenge',
-        craft: '#action-craft',
+        craft: {
+            string: '#action-craft-string',
+        },
         attack: '#action-attack',
     },
 };
@@ -91,23 +93,23 @@ $(document).ready(() => {
         }, 1000);
     });
 
-    $('#action').on("click", createButtonID.actions.craft, () => {
-        if (stats.inventory.pebble >= 5) {
-            stats.inventory.sword += 1;
-            stats.inventory.pebble -= 5;
-            console.log("crafting sword");
+    $('#action').on("click", createButtonID.actions.craft.string, () => {
+        if (stats.inventory.items.straw >= 5) {
+            stats.inventory.items.string += 1;
+            stats.inventory.items.straw -= 5;
+            console.log("crafting String");
 
-            $(createButtonID.actions.craft).prop('disabled', true);
+            $(createButtonID.actions.craft.string).prop('disabled', true);
 
             setTimeout(() => {
-                $(createButtonID.actions.craft).prop('disabled', false);
-                console.log('Crafting');
+                $(createButtonID.actions.craft.string).prop('disabled', false);
+                console.log('Crafting String');
             }, 3000);
         } else {
-            alert("You need 5 pebbles to craft a Sword.");
+            alert("You need 5 straws to craft a string.");
         }
 
-        console.log("Curent Pebble: " + stats.inventory.pebble);
+        console.log("Curent Straw: " + stats.inventory.items.straw);
     });
 
 
@@ -176,14 +178,14 @@ $(document).ready(() => {
         }
 
 
-        if (iStats.inventory.pebble >= 5 && !$('#action').find(createButtonID.actions.craft).length) {
-            btn.create('action', 'craft');
+        if (iStats.inventory.straw >= 5 && !$('#action').find(createButtonID.actions.craft.string).length) {
+            btn.create('action', 'craft-string');
         }
 
-        if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {
+        /*if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {
             display.create('display-inventory', 'sword');
             btn.create('action', 'attack');
-        }
+        }*/
 
         $('#total-pebble').text(stats.inventory.items.pebble.toFixed(0));
         $('#total-straw').text(stats.inventory.items.straw.toFixed(0));
