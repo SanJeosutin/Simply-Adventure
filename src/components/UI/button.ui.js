@@ -12,7 +12,7 @@ export default class Button {
         }
     }
 
-    create(btnLocation, btnName, btnTimeout = 500, btnClass = 'btn btn-sm btn-dark m-2') {
+    create(btnLocation, btnName, btnTimeout = 500, btnClass = 'btn btn-info') {
         this.btnProperties = {
             btnName: btnName.charAt(0).toUpperCase() + btnName.slice(1),
             btnID: btnLocation + '-' + btnName,

@@ -13,7 +13,7 @@ const display = new Display();
 
 const stats = {
     general: {
-        gameVersion: 'EXPERIMENTAL - 0.0.1',
+        gameVersion: 'EXPERIMENTAL - 0.0.2b',
     },
     inventory: {
         items: {
