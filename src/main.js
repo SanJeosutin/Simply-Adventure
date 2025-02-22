@@ -137,65 +137,35 @@ $(document).ready(() => {
             }
         };
 
-        if (iStats.inventory.pebble >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.pebble).length) {
-            display.create('display-inventory', 'pebble');
-        }
+        const materials = Object.keys(stats.inventory.items);
 
-        if (iStats.inventory.straw >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.straw).length) {
-            display.create('display-inventory', 'straw');
-        }
+        materials.forEach(material => {
+            if (stats.inventory.items[material] >= 1 && !$('#display-inventory').find(displayTotalID.items.materials[material]).length) {
+                display.create('display-inventory', material);
+            }
+        });
 
-        if (iStats.inventory.stick >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.stick).length) {
-            display.create('display-inventory', 'stick');
-        }
-
-        if (iStats.inventory.berry >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.berry).length) {
-            display.create('display-inventory', 'berry');
-        }
-
-        if (iStats.inventory.leaf >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.leaf).length) {
-            display.create('display-inventory', 'leaf');
-        }
-
-        if (iStats.inventory.string >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.string).length) {
-            display.create('display-inventory', 'string');
-        }
-
-        if (iStats.inventory.rope >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.rope).length) {
-            display.create('display-inventory', 'rope');
-        }
-
-        if (iStats.inventory.map >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.map).length) {
-            display.create('display-inventory', 'map');
-        }
-
-        if (iStats.inventory.charcoal >= 1 && !$('#display-inventory').find(displayTotalID.items.materials.charcoal).length) {
-            display.create('display-inventory', 'charcoal');
-        }
-
-
-        if (iStats.inventory.straw >= 5 && !$('#action').find(createButtonID.actions.craft.string).length) {
-            btn.create('action', 'craft-string');
-        }
-
-        if (iStats.inventory.string >= 7 && !$('#action').find(createButtonID.actions.craft.rope).length) {
-            btn.create('action', 'craft-rope');
-        }
+        const craftActions = [
+            { item: "straw", required: 5, buttonID: "craft-string" },
+            { item: "string", required: 7, buttonID: "craft-rope" },
+        ];
+        
+        craftActions.forEach(action => {
+            if (stats.inventory.items[action.item] >= action.required && 
+                !$('#action').find(createButtonID.actions.craft[action.buttonID.replace("craft-", "")]).length) {
+                btn.create('action', action.buttonID);
+            }
+        });
 
         /*if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {
             display.create('display-inventory', 'sword');
             btn.create('action', 'attack');
         }*/
-
-        $('#total-pebble').text(stats.inventory.items.pebble.toFixed(0));
-        $('#total-straw').text(stats.inventory.items.straw.toFixed(0));
-        $('#total-stick').text(stats.inventory.items.stick.toFixed(0));
-        $('#total-berry').text(stats.inventory.items.berry.toFixed(0));
-        $('#total-leaf').text(stats.inventory.items.leaf.toFixed(0));
-        $('#total-string').text(stats.inventory.items.string.toFixed(0));
-        $('#total-rope').text(stats.inventory.items.rope.toFixed(0));
-        $('#total-map').text(stats.inventory.items.map.toFixed(0));
-        $('#total-charcoal').text(stats.inventory.items.charcoal.toFixed(0));
+        
+// UPDATE PLAYERS INVENTORY ON THE U.I
+        materials.forEach(material => {
+            $(`#total-${material}`).text(stats.inventory.items[material].toFixed(0));
+        });
     };
 
     $('#current-version').text(stats.general.gameVersion);
