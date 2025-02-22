@@ -13,7 +13,7 @@ const display = new Display();
 
 const stats = {
     general: {
-        gameVersion: 'EXPERIMENTAL - 0.0.2b',
+        gameVersion: 'EXPERIMENTAL - 0.0.2c',
     },
     inventory: {
         items: {
@@ -46,6 +46,7 @@ const createButtonID = {
         scavenge: '#action-scavenge',
         craft: {
             string: '#action-craft-string',
+            rope: '#action-craft-rope',
         },
         attack: '#action-attack',
     },
@@ -110,6 +111,25 @@ $(document).ready(() => {
         }
 
         console.log("Curent Straw: " + stats.inventory.items.straw);
+    });
+
+    $('#action').on("click", createButtonID.actions.craft.rope, () => {
+        if (stats.inventory.items.string >= 7) {
+            stats.inventory.items.rope += 1;
+            stats.inventory.items.string -= 7;
+            console.log("crafting Rope");
+
+            $(createButtonID.actions.craft.rope).prop('disabled', true);
+
+            setTimeout(() => {
+                $(createButtonID.actions.craft.rope).prop('disabled', false);
+                console.log('Crafting Rope');
+            }, 9000);
+        } else {
+            alert("You need 7 strings to craft a rope.");
+        }
+
+        console.log("Curent Strings: " + stats.inventory.items.string);
     });
 
 
@@ -180,6 +200,10 @@ $(document).ready(() => {
 
         if (iStats.inventory.straw >= 5 && !$('#action').find(createButtonID.actions.craft.string).length) {
             btn.create('action', 'craft-string');
+        }
+
+        if (iStats.inventory.string >= 7 && !$('#action').find(createButtonID.actions.craft.rope).length) {
+            btn.create('action', 'craft-rope');
         }
 
         /*if (iStats.inventory.sword >= 1 && !$('#display-inventory').find(displayTotalID.items.weapons.sword).length) {

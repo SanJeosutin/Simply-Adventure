@@ -56,7 +56,7 @@
       <div class="col-md-8 mb-4">
         <div class="card" style="height: 50vh; overflow-y: auto;">
           <div class="card-body">
-            <h6 class="text-muted card-subtitle mb-2">Dialogs</h6>
+            <h5 class="text-muted card-subtitle mb-2">Dialogs</h5>
             <p class="card-text"><em>a soft voice can be heard from the distance...</em></p>
           </div>
         </div>
@@ -66,7 +66,7 @@
       <div class="col-md-4 mb-4">
         <div class="card" style="height: 50vh; overflow-y: auto;">
           <div class="card-body">
-            <h6 class="text-muted card-subtitle mb-2">Stats</h6>
+            <h5 class="text-muted card-subtitle mb-2">Stats</h5>
             <table class="table table-borderless ms-3">
               <tbody id="display-inventory">
               </tbody>
@@ -83,7 +83,7 @@
       <div class="col-md-12 mb-4">
         <div class="card" style="height: 35vh; overflow-y: auto;">
           <div class="card-body">
-            <h6 class="text-muted card-subtitle mb-2">Actions</h6>
+            <h5 class="text-muted card-subtitle mb-2">Actions</h5>
             <div class="btn-group-vertical btn-group-sm" role="group" id="action">
               <button class="btn btn-info" type="button" id="action-scavenge">Scavange</button>
             </div>
@@ -98,7 +98,8 @@
     <footer class="text-center py-4 fixed-bottom">
       <div class="container">
         <div class="row row-cols-1 row-cols-lg-3">
-          <div class="col"></div>
+          <div class="col"><button class="btn btn-info btn-sm" data-bs-toggle="modal"
+              data-bs-target="#changelogModal"><i class="fa-solid fa-clock-rotate-left"></i> Change Log</button></div>
           <div class="col"></div>
           <div class="col">
             <p class="text-muted my-2">Current Version (<span class="text-danger" id="current-version"></span>)</p>
@@ -106,6 +107,74 @@
         </div>
       </div>
     </footer>
+    <!-- Modal -->
+    <div class="modal fade" id="changelogModal" tabindex="-1" aria-labelledby="changelogModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-center" id="changelogModalLabel"><i
+                class="fa-solid fa-clock-rotate-left"></i> Change
+              Log </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h4>EXPERIMENTAL - 0.0.2c <i>[23rd of Febuary, 2025]</i></h4>
+            <ul>
+              <li>
+                Added a Change Logs.
+              </li>
+              <li>
+
+              </li>
+            </ul>
+
+            <h4>EXPERIMENTAL - 0.0.2b <i>[15th of April, 2024]</i></h4>
+            <ul>
+              <li>
+                UI overhaul.
+              </li>
+            </ul>
+
+            <h4>EXPERIMENTAL - 0.0.2a <i>[8th of October, 2023]</i></h4>
+            <ul>
+              <li>
+                More basic game mechanic were added.
+              </li>
+            </ul>
+
+            <h4>EXPERIMENTAL - 0.0.1c <i>[24th of August, 2023]</i></h4>
+            <ul>
+              <li>
+                Implement more dynamic way to create a button [will be very useful for the future build].
+              </li>
+              <li>
+                Various changes in regards to how the game structure will work together.
+              </li>
+              <li>
+                Added a way to update player's resources.
+              </li>
+            </ul>
+
+            <h4>EXPERIMENTAL - 0.0.1b <i>[10th of August, 2023]</i></h4>
+            <ul>
+              <li>
+                Fixes various bugs such as game loop mechanic sometimes would go faster than it should.
+              </li>
+              <li>
+                Added a very basic game mechanic [hard codded].
+              </li>
+            </ul>
+
+            <h4>EXPERIMENTAL - 0.0.1a <i>[4th of August, 2023]</i></h4>
+            <ul>
+              <li>
+                Create a simple game loop mechanic as a foundation of the game.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
