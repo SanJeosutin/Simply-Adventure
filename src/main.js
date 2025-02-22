@@ -1,6 +1,10 @@
 import GameLoop from './game/mechanics/gameloop.js';
+
 import Display from './components/UI/display.ui.js';
 import Button from './components/UI/button.ui.js';
+
+import CreateButton from './components/class/button.class.js';
+
 
 function lerp(v1, v2, p) {
     return v1 * (1 - p) + v2 * p;
@@ -11,7 +15,7 @@ const loop = new GameLoop();
 const btn = new Button();
 const display = new Display();
 
-const stats = {
+let stats = {
     general: {
         gameVersion: 'EXPERIMENTAL - 0.0.2c',
     },
@@ -80,6 +84,11 @@ let lastInterval = 0;
 
 
 $(document).ready(() => {
+
+//BUTTON CREATION WHEN CERTAIN CRITERIA ARE MET
+    const createAction = new CreateButton('#action');
+
+    //INITIALISED BUTTON
     $('#action').on('click', createButtonID.actions.scavenge, () => {
         stats.inventory.items.straw += Math.random(1) * 6;
         stats.inventory.items.stick += Math.random(1) * 6;
@@ -94,45 +103,12 @@ $(document).ready(() => {
         }, 1000);
     });
 
-    $('#action').on("click", createButtonID.actions.craft.string, () => {
-        if (stats.inventory.items.straw >= 5) {
-            stats.inventory.items.string += 1;
-            stats.inventory.items.straw -= 5;
-            console.log("crafting String");
-
-            $(createButtonID.actions.craft.string).prop('disabled', true);
-
-            setTimeout(() => {
-                $(createButtonID.actions.craft.string).prop('disabled', false);
-                console.log('Crafting String');
-            }, 3000);
-        } else {
-            alert("You need 5 straws to craft a string.");
-        }
-
-        console.log("Curent Straw: " + stats.inventory.items.straw);
-    });
-
-    $('#action').on("click", createButtonID.actions.craft.rope, () => {
-        if (stats.inventory.items.string >= 7) {
-            stats.inventory.items.rope += 1;
-            stats.inventory.items.string -= 7;
-            console.log("crafting Rope");
-
-            $(createButtonID.actions.craft.rope).prop('disabled', true);
-
-            setTimeout(() => {
-                $(createButtonID.actions.craft.rope).prop('disabled', false);
-                console.log('Crafting Rope');
-            }, 9000);
-        } else {
-            alert("You need 7 strings to craft a rope.");
-        }
-
-        console.log("Curent Strings: " + stats.inventory.items.string);
-    });
+    //create(action, inventory, reqItem, giveItem, reqQty, cooldown, message)
+    createAction.create(createButtonID.actions.craft.string, stats.inventory.items, "straw", "string", 5, 3000, "You need 5 straws to craft a string.");
+    createAction.create(createButtonID.actions.craft.rope, stats.inventory.items, "string", "rope", 7, 9000, "You need 7 strings to craft a rope.");
 
 
+//UPDATE PLAYER INVENTORY
     loop.onUpdate = (dt, t) => {
         prevStats.inventory.items.pebble = stats.inventory.items.pebble;
         prevStats.inventory.items.straw = stats.inventory.items.straw;
@@ -145,7 +121,7 @@ $(document).ready(() => {
         prevStats.inventory.items.charcoal = stats.inventory.items.charcoal;
     };
 
-
+// DISPLAY PLAYER INVENTORY
     loop.onRender = (i) => {
         const iStats = {
             inventory: {
