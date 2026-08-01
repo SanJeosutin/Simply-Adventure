@@ -1,22 +1,25 @@
 "use strict";
 
+import debugLog from '../Logic/debug.js';
+
+
 export default class CreateButton {
     create(action, inventory, reqItem, giveItem, reqQty, cooldown, message) {
-        $("#action").on("click", action, () => {
-            if (inventory[reqItem] >= reqQty) {  // Access item correctly
-                inventory[giveItem] = inventory[giveItem] + 1;
+        $('#action').on('click', action, () => {
+            if (inventory[reqItem] >= reqQty) {
+                inventory[giveItem] += 1;
                 inventory[reqItem] -= reqQty;
-                
+
                 $(action).prop('disabled', true);
                 setTimeout(() => {
                     $(action).prop('disabled', false);
-                    console.log(`Crafting ${giveItem}`);
+                    debugLog(`Crafting ${giveItem} complete.`);
                 }, cooldown);
             } else {
                 alert(message);
             }
 
-            console.log(`Current ${reqItem}: ${inventory[reqItem]}`);
+            debugLog(`Current ${reqItem}: ${inventory[reqItem]}`);
         });
     }
 }

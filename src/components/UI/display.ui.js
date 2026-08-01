@@ -1,34 +1,36 @@
 "use strict";
 
+import debugLog from '../Logic/debug.js';
+
+
 export default class Display {
     constructor(txtProperties = {}) {
-        this.txtProperties = {
+        const txtName = txtProperties.txtName ?? 'A Text';
 
-            txtName: 'A Text',
-            txtID: 'display' + '-' + this.txtName,
+        this.txtProperties = {
+            txtName,
+            txtID: `display-${txtName}`,
             txtClass: 'row',
-        }
+            ...txtProperties
+        };
     }
 
     create(location, txtName, txtClass = 'row') {
-
-        /** REMOVE WHEN DONE **/
-        console.log('-----------------');
-        console.log('Display is created from Display.ui class');
-        console.log("Location: " + location);
-        console.log(this.txtProperties);
-        /** REMOVE WHEN DONE **/
-
         this.txtProperties = {
             txtName: txtName.charAt(0).toUpperCase() + txtName.slice(1),
-            txtID: 'total-' + txtName,
-            txtClass: txtClass,
-        }
+            txtID: `total-${txtName}`,
+            txtClass,
+        };
 
-        $('#' + location).append(
+        debugLog('Display created:', {
+            location,
+            ...this.txtProperties,
+        });
+
+        $(`#${location}`).append(
             `<tr>
-                <th class="`+ this.txtProperties.txtClass + `">` + this.txtProperties.txtName + `</th>
-                <td id="`+ this.txtProperties.txtID + `"></td>
+                <th class="${this.txtProperties.txtClass}">${this.txtProperties.txtName}</th>
+                <td id="${this.txtProperties.txtID}"></td>
             </tr>`
         );
     }
