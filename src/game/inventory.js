@@ -1,31 +1,53 @@
 import Display from '../components/UI/display.ui.js';
 import Button from '../components/UI/button.ui.js';
+import Progress from '../components/UI/progress.ui.js';
 
-import { actionIDs, craftActions } from '../data/game.data.js';
+import {
+    campFireSettings,
+    craftActions,
+    getCraftActionID,
+} from '../data/game.data.js';
 
 
 const btn = new Button();
 const display = new Display();
+const defaultProgress = new Progress();
 
-export default function renderInventory(stats) {
-    const materials = Object.keys(stats.inventory.items);
+export default function renderInventory(stats, progress = defaultProgress) {
+    const inventoryEntries = Object.values(stats.inventory)
+        .flatMap(category => Object.entries(category));
 
-    materials.forEach(material => {
-        const totalID = `#total-${material}`;
+    inventoryEntries.forEach(([item, quantity]) => {
+        const totalID = `#total-${item}`;
 
-        if (stats.inventory.items[material] >= 1 && !$('#display-inventory').find(totalID).length) {
-            display.create('display-inventory', material);
+        if (quantity >= 1 && !$('#display-inventory').find(totalID).length) {
+            display.create('display-inventory', item);
         }
     });
 
-    craftActions.forEach(action => {
-        if (stats.inventory.items[action.requiredItem] >= action.required &&
-            !$('#action').find(actionIDs.craft[action.giveItem]).length) {
-            btn.create('action', action.buttonID);
+    craftActions.forEach(recipe => {
+        const hasRequirements = recipe.requirements.every(requirement =>
+            stats.inventory[requirement.category][requirement.item] >= requirement.quantity
+        );
+        const actionID = getCraftActionID(recipe.id);
+
+        if (hasRequirements && !$('#action').find(actionID).length) {
+            btn.create(
+                'action',
+                `craft-${recipe.id}`,
+                recipe.craftTime,
+                'btn btn-info',
+                `Craft ${recipe.label}`,
+            );
         }
     });
 
-    materials.forEach(material => {
-        $(`#total-${material}`).text(stats.inventory.items[material].toFixed(0));
+    progress.renderCampFireTimers(
+        stats.status?.campFires ?? [],
+        campFireSettings.fuelDuration,
+    );
+
+    inventoryEntries.forEach(([item, quantity]) => {
+        $(`#total-${item}`).text(quantity.toFixed(0));
     });
 }

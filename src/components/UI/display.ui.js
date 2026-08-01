@@ -16,8 +16,13 @@ export default class Display {
     }
 
     create(location, txtName, txtClass = 'row') {
+        const displayName = txtName
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
         this.txtProperties = {
-            txtName: txtName.charAt(0).toUpperCase() + txtName.slice(1),
+            txtName: displayName,
             txtID: `total-${txtName}`,
             txtClass,
         };
@@ -28,7 +33,7 @@ export default class Display {
         });
 
         $(`#${location}`).append(
-            `<tr>
+            `<tr id="display-${txtName}">
                 <th class="${this.txtProperties.txtClass}">${this.txtProperties.txtName}</th>
                 <td id="${this.txtProperties.txtID}"></td>
             </tr>`

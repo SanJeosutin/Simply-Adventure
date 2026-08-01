@@ -6,3 +6,61 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+
+.camp-fire-progress-item .progress {
+    height: 0.65rem;
+}
+
+.camp-fire-progress-value {
+    min-width: 3ch;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.camp-fire-progress-item .progress-bar {
+    transition: width 100ms linear;
+}
+
+#action .btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-progress-track {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.2rem;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+}
+
+.action-progress-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--bs-primary);
+    transition: width 100ms linear;
+}
+
+.camp-fire-progress-list {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.15rem 0 0.5rem;
+}
+
+.camp-fire-progress-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .action-progress-fill,
+    .camp-fire-progress-item .progress-bar {
+        animation: none !important;
+        transition: none !important;
+    }
+}
