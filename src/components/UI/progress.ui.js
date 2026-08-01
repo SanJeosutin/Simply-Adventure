@@ -61,8 +61,8 @@ export default class Progress {
             cancelAnimationFrame(actionProgress.animationFrame);
             this.updateProgress(progressID, 100, 'complete');
             this.activeActions.delete(action);
-            onComplete();
             this.announce(`${label} complete.`);
+            onComplete();
 
             setTimeout(() => {
                 $(`#${progressID}`).remove();
@@ -73,7 +73,7 @@ export default class Progress {
         return true;
     }
 
-    renderCampFireTimers(activeFires, duration) {
+    renderCampFireTimers(activeFires) {
         const activeFireIDs = new Set(activeFires.map(fire => fire.id));
 
         this.fireCycles.forEach((cycleStartedAt, fireID) => {
@@ -108,22 +108,40 @@ export default class Progress {
                 );
             }
 
-            const timeRemaining = Math.max(0, fire.fuelDueAt - Date.now());
-            const percentage = Math.min(100, Math.ceil((timeRemaining / duration) * 100));
+            const timeRemaining = fire.active
+                ? Math.max(0, fire.fuelDueAt - Date.now())
+                : 0;
+            const percentage = fire.active && fire.cycleDuration > 0
+                ? Math.min(100, Math.ceil((timeRemaining / fire.cycleDuration) * 100))
+                : 0;
             const progressBar = $(`#${progressID} .progress-bar`);
             const progress = $(`#${progressID} .progress`);
-            const warningLevel = percentage <= 20 ? 'danger' : percentage <= 50 ? 'warning' : 'success';
+            const progressItem = $(`#${progressID}`);
+            const valueLabel = fire.active
+                ? `${fire.terminal ? 'Final · ' : ''}${percentage}%`
+                : 'Inactive';
+            const ariaValue = fire.active
+                ? `${percentage}% time remaining${fire.terminal ? ' in final cycle' : ''}`
+                : 'Inactive; waiting for fuel';
+            const warningLevel = !fire.active
+                ? 'secondary'
+                : percentage <= 20 ? 'danger' : percentage <= 50 ? 'warning' : 'success';
 
             progressBar
-                .removeClass('bg-success bg-warning bg-danger')
+                .removeClass('bg-success bg-warning bg-danger bg-secondary')
                 .addClass(`bg-${warningLevel}`)
                 .css('width', `${percentage}%`);
             progress
                 .attr('aria-valuenow', percentage)
-                .attr('aria-valuetext', `${percentage}% time remaining`);
-            $(`#${progressID} .camp-fire-progress-value`).text(`${percentage}%`);
+                .attr('aria-valuetext', ariaValue);
+            progressItem.toggleClass('is-inactive', !fire.active);
+            $(`#${progressID} .camp-fire-progress-value`).text(valueLabel);
 
-            this.announceFireWarning(fire, percentage);
+            if (fire.active) {
+                this.announceFireWarning(fire, percentage);
+            } else {
+                this.fireWarnings.delete(fire.id);
+            }
         });
     }
 

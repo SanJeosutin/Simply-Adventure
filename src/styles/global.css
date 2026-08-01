@@ -12,7 +12,7 @@ body {
 }
 
 .camp-fire-progress-value {
-    min-width: 3ch;
+    min-width: 6ch;
     font-size: 0.75rem;
     font-variant-numeric: tabular-nums;
     text-align: right;
@@ -20,6 +20,10 @@ body {
 
 .camp-fire-progress-item .progress-bar {
     transition: width 100ms linear;
+}
+
+.camp-fire-progress-item.is-inactive .progress {
+    background: rgba(var(--bs-secondary-rgb), 0.18);
 }
 
 #action .btn {
@@ -55,6 +59,12 @@ body {
 .camp-fire-progress-label {
     font-size: 0.75rem;
     font-weight: 600;
+}
+
+.camp-fire-action,
+.hunt-action,
+.trap-action {
+    white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,6 +3,9 @@
 import debugLog from '../Logic/debug.js';
 import Progress from '../UI/progress.ui.js';
 
+import { registerDurability } from '../../game/durability.js';
+import { canCraftRecipe } from '../../game/requirements.js';
+
 
 export default class CreateButton {
     constructor(progress = new Progress()) {
@@ -11,7 +14,10 @@ export default class CreateButton {
     }
 
     create(action, inventory, reqItem, giveItem, reqQty, cooldown, message) {
-        this.createRecipe(action, { items: inventory }, {
+        this.createRecipe(action, {
+            inventory: { items: inventory },
+            status: {},
+        }, {
             id: giveItem,
             label: giveItem,
             requirements: [
@@ -23,24 +29,20 @@ export default class CreateButton {
         });
     }
 
-    createRecipe(action, inventory, recipe, onComplete = () => {}) {
+    createRecipe(action, stats, recipe, onComplete = () => {}) {
         $('#action').on('click', action, () => {
             if (this.activeCrafts.has(action) || this.progress.isActive(action)) {
                 return;
             }
 
-            const hasRequirements = recipe.requirements.every(requirement =>
-                inventory[requirement.category][requirement.item] >= requirement.quantity
-            );
-
-            if (!hasRequirements) {
+            if (!canCraftRecipe(stats, recipe)) {
                 alert(recipe.message);
                 debugLog(`Unable to craft ${recipe.label}: missing resources.`);
                 return;
             }
 
             recipe.requirements.forEach(requirement => {
-                inventory[requirement.category][requirement.item] -= requirement.quantity;
+                stats.inventory[requirement.category][requirement.item] -= requirement.quantity;
             });
 
             const actionButton = $(action);
@@ -54,17 +56,18 @@ export default class CreateButton {
                 () => {
                     const output = recipe.output;
 
-                    inventory[output.category][output.item] += output.quantity;
+                    stats.inventory[output.category][output.item] += output.quantity;
+                    registerDurability(stats, output.item, output.quantity);
                     this.activeCrafts.delete(action);
                     actionButton.prop('disabled', false);
                     debugLog(`Crafting ${recipe.label} complete.`);
-                    onComplete(recipe, inventory);
+                    onComplete(recipe, stats);
                 },
             );
 
             if (!started) {
                 recipe.requirements.forEach(requirement => {
-                    inventory[requirement.category][requirement.item] += requirement.quantity;
+                    stats.inventory[requirement.category][requirement.item] += requirement.quantity;
                 });
 
                 this.activeCrafts.delete(action);

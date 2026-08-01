@@ -1,11 +1,13 @@
 const settings = {
     debugMode: false,
-    gameVersion: 'EXPERIMENTAL - 0.0.2c',
+    gameVersion: 'EXPERIMENTAL - 0.0.3a',
 };
 
 const stats = {
     status: {
         campFires: [],
+        durability: {},
+        traps: [],
     },
     inventory: {
         items: {
@@ -19,6 +21,7 @@ const stats = {
             rope: 0,
             map: 0,
             charcoal: 0,
+            raw_rabbit: 0,
         },
         tools: {
             basic_spear: 0,
@@ -56,6 +59,30 @@ const campFireSettings = {
     fuelItem: 'leaf',
     fuelRequired: 25,
     fuelDuration: 300000,
+    charcoalItem: 'charcoal',
+    charcoalRequired: 1,
+    charcoalDuration: 1800000,
+};
+
+const durabilitySettings = {
+    basic_spear: { category: 'tools', maxUses: 2 },
+    basic_knife: { category: 'tools', maxUses: 4 },
+    camp_fire: { category: 'furnitures', maxUses: 10 },
+    trap: { category: 'furnitures', maxUses: 5 },
+};
+
+const huntingSettings = {
+    spear: {
+        tool: 'basic_spear',
+        minDuration: 10000,
+        maxDuration: 20000,
+        maxBonusChance: 0.5,
+    },
+    trap: {
+        furniture: 'trap',
+        minDuration: 45000,
+        maxDuration: 180000,
+    },
 };
 
 const craftActions = [
@@ -127,6 +154,19 @@ const craftActions = [
         craftTime: 15000,
         message: 'You need 2 ropes, 5 leaves, and 2 berries to craft a Trap.',
     },
+    {
+        id: 'charcoal',
+        label: 'Charcoal',
+        requirements: [
+            { category: 'items', item: 'stick', quantity: 5 },
+        ],
+        conditions: [
+            { type: 'active-furniture', item: 'camp_fire' },
+        ],
+        output: { category: 'items', item: 'charcoal', quantity: 1 },
+        craftTime: 45000,
+        message: 'You need an active Camp Fire and 5 sticks to craft Charcoal.',
+    },
 ];
 
 function getCraftActionID(recipeID) {
@@ -140,6 +180,8 @@ export {
     scavengeItems,
     scavengeSettings,
     campFireSettings,
+    durabilitySettings,
+    huntingSettings,
     craftActions,
     getCraftActionID,
 };
