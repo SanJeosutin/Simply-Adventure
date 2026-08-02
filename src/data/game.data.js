@@ -21,6 +21,143 @@ const scavengeSettings = {
     maxAmount: 6,
 };
 
+const berryConsumableSettings = {
+    action: '#action-eat-berry',
+    autoEatControl: '#auto-eat-berry',
+    cooldown: 100,
+    discoveryQuantity: 1,
+    hungerRestored: 0.02,
+    item: 'berry',
+    quantity: 1,
+    satedThreshold: 15,
+};
+
+const cookingSettings = Object.freeze({
+    raw_rabbit: {
+        cookedLabel: 'Cooked Rabbit',
+        cookedItem: 'cooked_rabbit',
+        cookingDuration: 300000,
+        hungerRestored: 7.5,
+        label: 'Raw Rabbit',
+        rottenItem: 'rotten_rabbit',
+        servings: 2,
+        spoilDuration: 7200000,
+    },
+    raw_fish: {
+        cookedLabel: 'Cooked Fish',
+        cookedItem: 'cooked_fish',
+        cookingDuration: 240000,
+        hungerRestored: 8,
+        label: 'Raw Fish',
+        rottenItem: 'rotten_fish',
+        servings: 1,
+        spoilDuration: 5400000,
+    },
+    fish_fillet: {
+        cookedLabel: 'Cooked Fish Fillet',
+        cookedItem: 'cooked_fish_fillet',
+        cookingDuration: 120000,
+        hungerRestored: 4,
+        label: 'Fish Fillet',
+        rottenItem: 'rotten_fish_fillet',
+        servings: 1,
+        spoilDuration: 7200000,
+    },
+    rabbit_meat: {
+        cookedLabel: 'Cooked Rabbit Meat',
+        cookedItem: 'cooked_rabbit_meat',
+        cookingDuration: 150000,
+        hungerRestored: 5,
+        label: 'Rabbit Meat',
+        rottenItem: 'rotten_rabbit_meat',
+        servings: 1,
+        spoilDuration: 10800000,
+    },
+});
+
+const cookedFoodSettings = Object.freeze(
+    Object.fromEntries(Object.entries(cookingSettings).map(([rawItem, food]) => [
+        food.cookedItem,
+        { ...food, rawItem },
+    ]))
+);
+
+const cookedFoodConsumptionDuration = 10000;
+
+const cascerationSettings = Object.freeze({
+    action: '#action-cascerate',
+    baseDurationPerItem: 10000,
+    foodControl: '#cascerate-food',
+    foods: {
+        raw_fish: {
+            durationPerItem: 10000,
+            label: 'Raw Fish',
+            yields: {
+                fish_bones: {
+                    fallbackRange: [2, 2],
+                    specialChance: 0.4,
+                    specialRange: [3, 4],
+                },
+                fish_fillet: {
+                    fallbackRange: [3, 3],
+                    specialChance: 0.4,
+                    specialRange: [4, 5],
+                },
+            },
+        },
+        raw_rabbit: {
+            durationPerItem: 15000,
+            label: 'Raw Rabbit',
+            yields: {
+                rabbit_hide: {
+                    fallbackRange: [1, 1],
+                    specialChance: 0.2,
+                    specialRange: [0, 0],
+                },
+                rabbit_meat: {
+                    fallbackRange: [1, 2],
+                    specialChance: 0.45,
+                    specialRange: [3, 3],
+                },
+                rabbit_foot: {
+                    fallbackRange: [1, 2],
+                    specialChance: 0.75,
+                    specialRange: [0, 0],
+                },
+                rabbit_bones: {
+                    fallbackRange: [2, 4],
+                    specialChance: 0.65,
+                    specialRange: [5, 5],
+                },
+            },
+        },
+    },
+    quantityAdjustmentPerItem: 950,
+    quantityControl: '#cascerate-quantity',
+    tool: 'basic_knife',
+    toolDuration: 45000,
+});
+
+const splintSettings = Object.freeze({
+    action: '#action-apply-splint',
+    applicationDuration: 10000,
+    cooldown: 120000,
+    healthRestored: 0.5,
+    item: 'splint',
+});
+
+const baitSettings = Object.freeze({
+    control: '#trap-bait',
+    items: [
+        'berry',
+        'rotten_rabbit',
+        'rotten_fish',
+        'rotten_fish_fillet',
+        'rotten_rabbit_meat',
+    ],
+    quantity: 1,
+});
+
 const campFireSettings = {
     fuelItem: 'leaf',
     fuelRequired: 25,
@@ -121,6 +258,17 @@ const craftActions = [
         message: 'You need 2 ropes, 5 leaves, and 2 berries to craft a Trap.',
     },
     {
+        id: 'splint',
+        label: 'Splint',
+        requirements: [
+            { category: 'items', item: 'stick', quantity: 10 },
+            { category: 'items', item: 'string', quantity: 6 },
+        ],
+        output: { category: 'items', item: 'splint', quantity: 1 },
+        craftTime: 60000,
+        message: 'You need 10 sticks and 6 strings to craft a Splint.',
+    },
+    {
         id: 'charcoal',
         label: 'Charcoal',
         requirements: [
@@ -142,11 +290,18 @@ function getCraftActionID(recipeID) {
 export {
     settings,
     actionIDs,
+    baitSettings,
+    berryConsumableSettings,
+    cascerationSettings,
+    cookedFoodConsumptionDuration,
+    cookedFoodSettings,
+    cookingSettings,
     scavengeItems,
     scavengeSettings,
     campFireSettings,
     durabilitySettings,
     huntingSettings,
+    splintSettings,
     craftActions,
     getCraftActionID,
 };

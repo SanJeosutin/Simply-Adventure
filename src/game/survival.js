@@ -50,15 +50,10 @@ export default class SurvivalSystem {
         this.running = true;
 
         survivalNeeds.forEach(name => {
-            const attribute = this.stats.attributes[name];
-
             this.deadlines[name] = {
-                nextDamageAt: attribute.current === 0
-                    ? startedAt + attribute.zeroDamage.intervalMs
-                    : null,
-                nextDecayAt: attribute.current > 0
-                    ? startedAt + attribute.decay.intervalMs
-                    : null,
+                active: false,
+                nextDamageAt: null,
+                nextDecayAt: null,
             };
         });
 
@@ -67,7 +62,7 @@ export default class SurvivalSystem {
             return true;
         }
 
-        this.scheduleNextTick();
+        this.syncUnlockedNeeds(startedAt);
 
         return true;
     }
@@ -79,6 +74,72 @@ export default class SurvivalSystem {
         }
 
         this.running = false;
+    }
+
+    syncUnlockedNeeds(currentTime = this.now()) {
+        if (!this.running) {
+            return false;
+        }
+
+        let activatedNeed = false;
+
+        survivalNeeds.forEach(name => {
+            const deadlines = this.deadlines[name];
+            const isUnlocked = Boolean(
+                this.stats.status?.unlockedAttributes?.[name]
+            );
+
+            if (!deadlines || deadlines.active || !isUnlocked) {
+                return;
+            }
+
+            const attribute = this.stats.attributes[name];
+
+            deadlines.active = true;
+            deadlines.nextDamageAt = attribute.current === 0
+                ? currentTime + attribute.zeroDamage.intervalMs
+                : null;
+            deadlines.nextDecayAt = attribute.current > 0
+                ? currentTime + attribute.decay.intervalMs
+                : null;
+            activatedNeed = true;
+        });
+
+        if (!activatedNeed) {
+            return false;
+        }
+
+        if (this.timerID !== null) {
+            this.clearTimer(this.timerID);
+            this.timerID = null;
+        }
+
+        this.scheduleNextTick();
+
+        return true;
+    }
+
+    refreshNeed(name, currentTime = this.now()) {
+        const attribute = this.stats.attributes[name];
+        const deadlines = this.deadlines[name];
+
+        if (!this.running || !survivalNeeds.includes(name) || !attribute ||
+            !deadlines?.active || attribute.current <= 0 ||
+            deadlines.nextDamageAt === null) {
+            return false;
+        }
+
+        deadlines.nextDamageAt = null;
+        deadlines.nextDecayAt = currentTime + attribute.decay.intervalMs;
+
+        if (this.timerID !== null) {
+            this.clearTimer(this.timerID);
+            this.timerID = null;
+        }
+
+        this.scheduleNextTick();
+
+        return true;
     }
 
     advance(currentTime = this.now()) {

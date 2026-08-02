@@ -96,10 +96,27 @@ function createPlayerStats(playerData) {
         attributes: cloneData(validatedData.attributes),
         inventory: cloneData(validatedData.inventory),
         status: {
+            autoEatBerry: false,
             campFires: [],
+            cookingJobs: [],
+            cooldowns: {
+                splintReadyAt: 0,
+            },
+            discoveries: {
+                waterSourceFound: false,
+            },
             durability: {},
             gameOver: false,
+            preparedFoods: [],
+            selectedBait: null,
+            selectedCampFireID: null,
+            selectedCascerationFood: null,
             traps: [],
+            unlockedAttributes: {
+                health: false,
+                hunger: false,
+                thirst: false,
+            },
         },
     };
 }

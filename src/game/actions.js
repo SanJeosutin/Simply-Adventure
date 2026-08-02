@@ -10,12 +10,39 @@ import {
     scavengeSettings,
 } from '../data/game.data.js';
 import { initializeCampFireActions, startCampFireUpkeep } from './camp-fire.js';
+import { initializeCascerationActions } from './casceration.js';
+import {
+    initializeBerryActions,
+    initializeCookedFoodActions,
+} from './consumables.js';
+import CookingSystem, { initializeCookingActions } from './cooking.js';
 import { createTrap, initializeHuntingActions } from './hunting.js';
+import { initializeMedicalActions } from './medical.js';
 
-export default function initializeActions(stats, progress = new Progress()) {
+export default function initializeActions(
+    stats,
+    progress = new Progress(),
+    options = {},
+) {
     const createAction = new CreateButton(progress);
+    const cooking = new CookingSystem(stats, progress);
+    const berryActions = initializeBerryActions(
+        stats,
+        progress,
+        globalThis.$,
+        options.onNeedRestored,
+    );
 
-    initializeCampFireActions(stats, progress);
+    initializeCookedFoodActions(
+        stats,
+        progress,
+        globalThis.$,
+        options.onNeedRestored,
+    );
+    initializeCookingActions(stats, cooking);
+    initializeCascerationActions(stats, progress);
+    initializeMedicalActions(stats, progress);
+    initializeCampFireActions(stats, progress, cooking.campFireHooks);
     initializeHuntingActions(stats, progress);
 
     $('#action').on('click', actionIDs.scavenge, () => {
@@ -58,7 +85,11 @@ export default function initializeActions(stats, progress = new Progress()) {
 
     craftActions.forEach(recipe => {
         const onComplete = {
-            'camp-fire': () => startCampFireUpkeep(stats, progress),
+            'camp-fire': () => startCampFireUpkeep(
+                stats,
+                progress,
+                cooking.campFireHooks,
+            ),
             trap: () => createTrap(stats),
         }[recipe.id];
 
@@ -69,4 +100,11 @@ export default function initializeActions(stats, progress = new Progress()) {
             onComplete,
         );
     });
+
+    return {
+        update() {
+            cooking.update();
+            berryActions.update();
+        },
+    };
 }

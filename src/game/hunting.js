@@ -1,19 +1,36 @@
 import debugLog from '../components/Logic/debug.js';
 
-import { huntingSettings } from '../data/game.data.js';
+import { baitSettings, huntingSettings } from '../data/game.data.js';
 import { consumeDurability, hasDurability } from './durability.js';
 
 
 let nextTrapID = 0;
 
-function randomDuration(minimum, maximum) {
+function randomDuration(minimum, maximum, random = Math.random) {
     const minimumSeconds = Math.ceil(minimum / 1000);
     const maximumSeconds = Math.floor(maximum / 1000);
 
     return (
-        Math.floor(Math.random() * (maximumSeconds - minimumSeconds + 1)) +
+        Math.floor(random() * (maximumSeconds - minimumSeconds + 1)) +
         minimumSeconds
     ) * 1000;
+}
+
+function getAvailableBaits(stats) {
+    return baitSettings.items.filter(item =>
+        stats.inventory.items[item] >= baitSettings.quantity
+    );
+}
+
+function resolveBait(stats, requestedBait = null) {
+    const availableBaits = getAvailableBaits(stats);
+    const selectedBait = requestedBait ?? stats.status.selectedBait;
+
+    if (availableBaits.includes(selectedBait)) {
+        return selectedBait;
+    }
+
+    return availableBaits[0] ?? null;
 }
 
 function createTrap(stats) {
@@ -26,6 +43,7 @@ function createTrap(stats) {
     );
     const trap = {
         active: false,
+        baitItem: null,
         catchDueAt: null,
         catchDuration: 0,
         catchStartedAt: null,
@@ -82,7 +100,13 @@ function startSpearHunt(stats, progress) {
     return started;
 }
 
-function startTrapHunt(stats, progress, trapID) {
+function startTrapHunt(
+    stats,
+    progress,
+    trapID,
+    requestedBait = null,
+    options = {},
+) {
     if (stats.status.gameOver) {
         return false;
     }
@@ -90,16 +114,24 @@ function startTrapHunt(stats, progress, trapID) {
     const settings = huntingSettings.trap;
     const trap = stats.status.traps.find(currentTrap => currentTrap.id === trapID);
     const action = `#action-set-trap-${trapID}`;
+    const baitItem = resolveBait(stats, requestedBait);
 
     if (!trap || trap.active || !hasDurability(stats, settings.furniture) ||
-        progress.isActive(action)) {
+        progress.isActive(action) || !baitItem) {
         return false;
     }
 
-    const duration = randomDuration(settings.minDuration, settings.maxDuration);
-    const actionButton = $(action).prop('disabled', true);
+    const duration = randomDuration(
+        settings.minDuration,
+        settings.maxDuration,
+        options.random,
+    );
+    const actionButton = (options.query ?? globalThis.$)(action)
+        .prop('disabled', true);
 
+    stats.inventory.items[baitItem] -= baitSettings.quantity;
     trap.active = true;
+    trap.baitItem = baitItem;
     trap.catchDuration = duration;
     trap.catchStartedAt = Date.now();
     trap.catchDueAt = trap.catchStartedAt + duration;
@@ -109,6 +141,7 @@ function startTrapHunt(stats, progress, trapID) {
 
         stats.inventory.items.raw_rabbit += 1;
         trap.active = false;
+        trap.baitItem = null;
         trap.catchDuration = 0;
         trap.catchStartedAt = null;
         trap.catchDueAt = null;
@@ -127,7 +160,9 @@ function startTrapHunt(stats, progress, trapID) {
     });
 
     if (!started) {
+        stats.inventory.items[baitItem] += baitSettings.quantity;
         trap.active = false;
+        trap.baitItem = null;
         trap.catchDuration = 0;
         trap.catchStartedAt = null;
         trap.catchDueAt = null;
@@ -146,18 +181,30 @@ function initializeHuntingActions(stats, progress) {
         startSpearHunt(stats, progress);
     });
 
+    $('#action').on('change', baitSettings.control, event => {
+        stats.status.selectedBait = event.currentTarget.value;
+    });
+
     $('#action').on('click', '[data-trap-action="hunt"]', event => {
         if (stats.status.gameOver) {
             return;
         }
 
-        startTrapHunt(stats, progress, Number(event.currentTarget.dataset.trapId));
+        startTrapHunt(
+            stats,
+            progress,
+            Number(event.currentTarget.dataset.trapId),
+            $(baitSettings.control).val(),
+        );
     });
 }
 
 export {
     createTrap,
+    getAvailableBaits,
     initializeHuntingActions,
+    resolveBait,
+    randomDuration,
     startSpearHunt,
     startTrapHunt,
 };

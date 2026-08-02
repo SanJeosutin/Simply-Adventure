@@ -21,7 +21,9 @@ function createDeathDropSnapshot(stats) {
 
                 return cloneData(serializableFire);
             }),
+            cookingJobs: cloneData(stats.status?.cookingJobs ?? []),
             durability: cloneData(stats.status?.durability ?? {}),
+            preparedFoods: cloneData(stats.status?.preparedFoods ?? []),
             traps: cloneData(stats.status?.traps ?? []),
         },
     };

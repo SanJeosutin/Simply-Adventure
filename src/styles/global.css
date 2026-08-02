@@ -11,6 +11,10 @@ body {
     height: 0.65rem;
 }
 
+.cooking-job .progress {
+    height: 0.65rem;
+}
+
 .camp-fire-progress-value {
     min-width: 6ch;
     font-size: 0.75rem;
@@ -19,6 +23,10 @@ body {
 }
 
 .camp-fire-progress-item .progress-bar {
+    transition: width 100ms linear;
+}
+
+.cooking-job .progress-bar {
     transition: width 100ms linear;
 }
 
@@ -69,7 +77,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
     .action-progress-fill,
-    .camp-fire-progress-item .progress-bar {
+    .camp-fire-progress-item .progress-bar,
+    .cooking-job .progress-bar {
         animation: none !important;
         transition: none !important;
     }

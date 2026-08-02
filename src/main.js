@@ -2,6 +2,7 @@ import GameLoop from './game/mechanics/gameloop.js';
 
 import initializeActions from './game/actions.js';
 import DeathDropStore from './game/death-drops.js';
+import { updateAttributeUnlocks } from './game/discovery.js';
 import renderInventory from './game/inventory.js';
 import SurvivalSystem from './game/survival.js';
 
@@ -18,7 +19,7 @@ const deathDropSyncInterval = 250;
 function showInitializationError(error) {
     const errorMessage = 'Unable to start the game. Check player.data.json.';
 
-    $('#action button').prop('disabled', true);
+    $('#action button, #action input, #action select').prop('disabled', true);
     $('#display-stats').append(
         '<tr id="display-initialization-error"><th>Status</th><td class="text-danger"></td></tr>'
     );
@@ -33,7 +34,7 @@ function endRun(stats, deathDrops) {
     }
 
     stats.status.gameOver = true;
-    $('#action button').prop('disabled', true);
+    $('#action button, #action input, #action select').prop('disabled', true);
 
     const result = deathDrops.create(stats);
 
@@ -65,9 +66,15 @@ $(document).ready(async () => {
     });
     let lastDeathDropSyncAt = 0;
 
-    initializeActions(stats, progress);
+    const actionController = initializeActions(stats, progress, {
+        onNeedRestored: name => survival.refreshNeed(name),
+    });
 
-    loop.onUpdate = () => {};
+    loop.onUpdate = () => {
+        actionController.update();
+        updateAttributeUnlocks(stats);
+        survival.syncUnlockedNeeds();
+    };
     loop.onRender = () => {
         const currentTime = Date.now();
 

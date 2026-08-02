@@ -127,6 +127,10 @@
                 <button class="nav-link active" id="actions-tab" data-bs-toggle="tab" data-bs-target="#actions-pane"
                   type="button" role="tab" aria-controls="actions-pane" aria-selected="true">Actions</button>
               </li>
+              <li class="nav-item" id="cooking-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="cooking-tab" data-bs-toggle="tab" data-bs-target="#cooking-pane"
+                  type="button" role="tab" aria-controls="cooking-pane" aria-selected="false">Cooking</button>
+              </li>
               <li class="nav-item" id="crafting-tab-item" role="presentation" hidden>
                 <button class="nav-link" id="crafting-tab" data-bs-toggle="tab" data-bs-target="#crafting-pane"
                   type="button" role="tab" aria-controls="crafting-pane" aria-selected="false">Crafting</button>
@@ -146,6 +150,37 @@
                 <div class="btn-group-vertical btn-group-sm" id="action-actions" role="group" aria-label="Actions">
                   <button class="btn btn-info" type="button" id="action-scavenge">Scavenge</button>
                 </div>
+                <div class="form-check mt-2" id="auto-eat-berry-control" hidden>
+                  <input class="form-check-input" type="checkbox" id="auto-eat-berry">
+                  <label class="form-check-label" for="auto-eat-berry">Auto Eat Berry</label>
+                </div>
+              </div>
+              <div class="tab-pane" id="cooking-pane" role="tabpanel" aria-labelledby="cooking-tab" tabindex="0">
+                <div id="action-cooking">
+                  <div id="cooking-controls" hidden>
+                    <div class="mb-2" id="camp-fire-selector-control" hidden>
+                      <label class="form-label" for="camp-fire-selector">Camp Fire</label>
+                      <select class="form-select form-select-sm" id="camp-fire-selector"></select>
+                    </div>
+                    <div class="btn-group-vertical btn-group-sm" id="action-cooking-buttons" role="group"
+                      aria-label="Cooking actions"></div>
+                  </div>
+                  <div class="mb-2" id="cooking-job-status"></div>
+                  <fieldset id="casceration-controls" hidden>
+                    <legend class="h6">Cascerate</legend>
+                    <div class="mb-2">
+                      <label class="form-label" for="cascerate-food">Raw food</label>
+                      <select class="form-select form-select-sm" id="cascerate-food"></select>
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label" for="cascerate-quantity">Quantity</label>
+                      <input class="form-control form-control-sm" id="cascerate-quantity" type="number" min="1"
+                        step="1" value="1">
+                    </div>
+                    <p class="small text-muted">Tool: Basic Knife</p>
+                    <button class="btn btn-info btn-sm" id="action-cascerate" type="button">Cascerate</button>
+                  </fieldset>
+                </div>
               </div>
               <div class="tab-pane" id="crafting-pane" role="tabpanel" aria-labelledby="crafting-tab" tabindex="0">
                 <div class="btn-group-vertical btn-group-sm" id="action-crafting" role="group"
@@ -156,6 +191,10 @@
                   aria-label="Building actions"></div>
               </div>
               <div class="tab-pane" id="hunting-pane" role="tabpanel" aria-labelledby="hunting-tab" tabindex="0">
+                <div class="mb-2" id="trap-bait-control" hidden>
+                  <label class="form-label" for="trap-bait">Trap bait</label>
+                  <select class="form-select form-select-sm" id="trap-bait"></select>
+                </div>
                 <div class="btn-group-vertical btn-group-sm" id="action-hunting" role="group"
                   aria-label="Hunting actions"></div>
               </div>

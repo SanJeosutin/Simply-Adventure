@@ -35,24 +35,30 @@ function markInactive(fire) {
     fire.timerID = null;
 }
 
-function removeCampFire(stats, fire) {
+function notifyCampFire(hooks, eventName, fire) {
+    hooks?.[eventName]?.(fire);
+}
+
+function removeCampFire(stats, fire, hooks = {}) {
     clearTimeout(fire.timerID);
+    notifyCampFire(hooks, 'onRemoved', fire);
     stats.status.campFires = stats.status.campFires.filter(currentFire =>
         currentFire.id !== fire.id
     );
 }
 
-function finishTerminalCycle(stats, progress, fire) {
+function finishTerminalCycle(stats, progress, fire, hooks = {}) {
     finalizeDurabilityBreak(stats, 'camp_fire');
-    removeCampFire(stats, fire);
+    removeCampFire(stats, fire, hooks);
     progress.announce(`Camp Fire ${fire.id} ran out of durability and broke.`);
     debugLog(`Camp Fire ${fire.id} broke.`);
 }
 
-function beginLeafCycle(stats, progress, fire) {
+function beginLeafCycle(stats, progress, fire, hooks = {}) {
     const items = stats.inventory.items;
 
     if (items[campFireSettings.fuelItem] < campFireSettings.fuelRequired) {
+        notifyCampFire(hooks, 'onInactive', fire);
         markInactive(fire);
         progress.announce(`Camp Fire ${fire.id} is inactive. It needs fuel.`);
         debugLog(`Camp Fire ${fire.id} became inactive.`);
@@ -60,7 +66,7 @@ function beginLeafCycle(stats, progress, fire) {
     }
 
     if (!hasDurability(stats, 'camp_fire')) {
-        removeCampFire(stats, fire);
+        removeCampFire(stats, fire, hooks);
         progress.announce(`Camp Fire ${fire.id} ran out of durability and broke.`);
         return false;
     }
@@ -70,7 +76,8 @@ function beginLeafCycle(stats, progress, fire) {
     const durability = consumeDurability(stats, 'camp_fire', { deferBreak: true });
 
     startCycle(fire, campFireSettings.fuelDuration, { terminal: durability.broke });
-    scheduleCampFireUpkeep(stats, progress, fire);
+    notifyCampFire(hooks, 'onActivated', fire);
+    scheduleCampFireUpkeep(stats, progress, fire, hooks);
     progress.announce(
         durability.broke
             ? `Camp Fire ${fire.id} started its final leaf cycle.`
@@ -81,7 +88,7 @@ function beginLeafCycle(stats, progress, fire) {
     return true;
 }
 
-function completeCampFireCycle(stats, progress, fire) {
+function completeCampFireCycle(stats, progress, fire, hooks = {}) {
     const activeFire = getCampFire(stats, fire.id);
 
     if (!activeFire) {
@@ -91,7 +98,7 @@ function completeCampFireCycle(stats, progress, fire) {
     activeFire.timerID = null;
 
     if (activeFire.terminal) {
-        finishTerminalCycle(stats, progress, activeFire);
+        finishTerminalCycle(stats, progress, activeFire, hooks);
         return;
     }
 
@@ -101,17 +108,17 @@ function completeCampFireCycle(stats, progress, fire) {
         const durability = consumeDurability(stats, 'camp_fire');
 
         if (!durability.consumed || durability.broke) {
-            removeCampFire(stats, activeFire);
+            removeCampFire(stats, activeFire, hooks);
             progress.announce(`Camp Fire ${fire.id} ran out of durability and broke.`);
             debugLog(`Camp Fire ${fire.id} broke after its charcoal cycle.`);
             return;
         }
     }
 
-    beginLeafCycle(stats, progress, activeFire);
+    beginLeafCycle(stats, progress, activeFire, hooks);
 }
 
-function scheduleCampFireUpkeep(stats, progress, fire) {
+function scheduleCampFireUpkeep(stats, progress, fire, hooks = {}) {
     clearTimeout(fire.timerID);
 
     if (!fire.active || !fire.fuelDueAt) {
@@ -122,14 +129,14 @@ function scheduleCampFireUpkeep(stats, progress, fire) {
     const delay = Math.max(0, fire.fuelDueAt - Date.now());
 
     fire.timerID = setTimeout(
-        () => completeCampFireCycle(stats, progress, fire),
+        () => completeCampFireCycle(stats, progress, fire, hooks),
         delay,
     );
 
     return fire.timerID;
 }
 
-function startCampFireUpkeep(stats, progress) {
+function startCampFireUpkeep(stats, progress, hooks = {}) {
     stats.status ??= {};
     stats.status.campFires ??= [];
 
@@ -145,12 +152,13 @@ function startCampFireUpkeep(stats, progress) {
     nextCampFireID = fire.id;
     startCycle(fire, campFireSettings.fuelDuration);
     stats.status.campFires.push(fire);
-    scheduleCampFireUpkeep(stats, progress, fire);
+    notifyCampFire(hooks, 'onActivated', fire);
+    scheduleCampFireUpkeep(stats, progress, fire, hooks);
 
     return fire;
 }
 
-function refuelWithLeaves(stats, progress, fireID) {
+function refuelWithLeaves(stats, progress, fireID, hooks = {}) {
     if (stats.status.gameOver) {
         return false;
     }
@@ -161,10 +169,10 @@ function refuelWithLeaves(stats, progress, fireID) {
         return false;
     }
 
-    return beginLeafCycle(stats, progress, fire);
+    return beginLeafCycle(stats, progress, fire, hooks);
 }
 
-function refuelWithCharcoal(stats, progress, fireID) {
+function refuelWithCharcoal(stats, progress, fireID, hooks = {}) {
     if (stats.status.gameOver) {
         return false;
     }
@@ -188,20 +196,26 @@ function refuelWithCharcoal(stats, progress, fireID) {
     fire.cycleStartedAt = now;
     fire.fuelDueAt = currentDeadline + campFireSettings.charcoalDuration;
     fire.cycleDuration = fire.fuelDueAt - now;
-    scheduleCampFireUpkeep(stats, progress, fire);
+    notifyCampFire(hooks, 'onActivated', fire);
+    scheduleCampFireUpkeep(stats, progress, fire, hooks);
     progress.announce(`Camp Fire ${fire.id} fueled with charcoal for 30 more minutes.`);
     debugLog(`Camp Fire ${fire.id} fueled with charcoal.`);
 
     return true;
 }
 
-function initializeCampFireActions(stats, progress) {
+function initializeCampFireActions(stats, progress, hooks = {}) {
     $('#action').on('click', '[data-fire-action="leaves"]', event => {
         if (stats.status.gameOver) {
             return;
         }
 
-        refuelWithLeaves(stats, progress, Number(event.currentTarget.dataset.fireId));
+        refuelWithLeaves(
+            stats,
+            progress,
+            Number(event.currentTarget.dataset.fireId),
+            hooks,
+        );
     });
 
     $('#action').on('click', '[data-fire-action="charcoal"]', event => {
@@ -209,7 +223,12 @@ function initializeCampFireActions(stats, progress) {
             return;
         }
 
-        refuelWithCharcoal(stats, progress, Number(event.currentTarget.dataset.fireId));
+        refuelWithCharcoal(
+            stats,
+            progress,
+            Number(event.currentTarget.dataset.fireId),
+            hooks,
+        );
     });
 }
 
