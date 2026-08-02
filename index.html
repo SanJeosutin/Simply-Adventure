@@ -66,11 +66,50 @@
       <div class="col-md-4 mb-4">
         <div class="card" style="height: 50vh; overflow-y: auto;">
           <div class="card-body">
-            <h5 class="text-muted card-subtitle mb-2">Stats</h5>
-            <table class="table table-borderless ms-3">
-              <tbody id="display-inventory">
-              </tbody>
-            </table>
+            <ul class="nav nav-tabs mb-2" id="player-data-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-pane"
+                  type="button" role="tab" aria-controls="stats-pane" aria-selected="true">Stats</button>
+              </li>
+              <li class="nav-item" id="inventory-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory-pane"
+                  type="button" role="tab" aria-controls="inventory-pane" aria-selected="false">Inventory</button>
+              </li>
+              <li class="nav-item" id="furnitures-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="furnitures-tab" data-bs-toggle="tab" data-bs-target="#furnitures-pane"
+                  type="button" role="tab" aria-controls="furnitures-pane" aria-selected="false">Furnitures</button>
+              </li>
+              <li class="nav-item" id="tools-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="tools-tab" data-bs-toggle="tab" data-bs-target="#tools-pane"
+                  type="button" role="tab" aria-controls="tools-pane" aria-selected="false">Tools</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="player-data-tab-content">
+              <div class="tab-pane show active" id="stats-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
+                <table class="table table-borderless ms-3">
+                  <tbody id="display-stats">
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane" id="inventory-pane" role="tabpanel" aria-labelledby="inventory-tab" tabindex="0">
+                <table class="table table-borderless ms-3">
+                  <tbody id="display-inventory">
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane" id="furnitures-pane" role="tabpanel" aria-labelledby="furnitures-tab" tabindex="0">
+                <table class="table table-borderless ms-3">
+                  <tbody id="display-furnitures">
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane" id="tools-pane" role="tabpanel" aria-labelledby="tools-tab" tabindex="0">
+                <table class="table table-borderless ms-3">
+                  <tbody id="display-tools">
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -83,9 +122,43 @@
       <div class="col-md-12 mb-4">
         <div class="card" style="height: 35vh; overflow-y: auto;">
           <div class="card-body">
-            <h5 class="text-muted card-subtitle mb-2">Actions</h5>
-            <div class="btn-group-vertical btn-group-sm" role="group" id="action">
-              <button class="btn btn-info" type="button" id="action-scavenge">Scavenge</button>
+            <ul class="nav nav-tabs mb-2" id="action-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="actions-tab" data-bs-toggle="tab" data-bs-target="#actions-pane"
+                  type="button" role="tab" aria-controls="actions-pane" aria-selected="true">Actions</button>
+              </li>
+              <li class="nav-item" id="crafting-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="crafting-tab" data-bs-toggle="tab" data-bs-target="#crafting-pane"
+                  type="button" role="tab" aria-controls="crafting-pane" aria-selected="false">Crafting</button>
+              </li>
+              <li class="nav-item" id="building-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="building-tab" data-bs-toggle="tab" data-bs-target="#building-pane"
+                  type="button" role="tab" aria-controls="building-pane" aria-selected="false">Building</button>
+              </li>
+              <li class="nav-item" id="hunting-tab-item" role="presentation" hidden>
+                <button class="nav-link" id="hunting-tab" data-bs-toggle="tab" data-bs-target="#hunting-pane"
+                  type="button" role="tab" aria-controls="hunting-pane" aria-selected="false">Hunting</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="action">
+              <div class="tab-pane show active" id="actions-pane" role="tabpanel" aria-labelledby="actions-tab"
+                tabindex="0">
+                <div class="btn-group-vertical btn-group-sm" id="action-actions" role="group" aria-label="Actions">
+                  <button class="btn btn-info" type="button" id="action-scavenge">Scavenge</button>
+                </div>
+              </div>
+              <div class="tab-pane" id="crafting-pane" role="tabpanel" aria-labelledby="crafting-tab" tabindex="0">
+                <div class="btn-group-vertical btn-group-sm" id="action-crafting" role="group"
+                  aria-label="Crafting actions"></div>
+              </div>
+              <div class="tab-pane" id="building-pane" role="tabpanel" aria-labelledby="building-tab" tabindex="0">
+                <div class="btn-group-vertical btn-group-sm" id="action-building" role="group"
+                  aria-label="Building actions"></div>
+              </div>
+              <div class="tab-pane" id="hunting-pane" role="tabpanel" aria-labelledby="hunting-tab" tabindex="0">
+                <div class="btn-group-vertical btn-group-sm" id="action-hunting" role="group"
+                  aria-label="Hunting actions"></div>
+              </div>
             </div>
             <div class="visually-hidden" id="action-progress-status"></div>
             <div class="visually-hidden" id="action-status" aria-live="polite" aria-atomic="true"></div>
@@ -120,6 +193,22 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <h4>EXPERIMENTAL - 0.0.3b <i>[2nd of August, 2026]</i></h4>
+            <ul>
+              <li>
+                Added Health, Hunger, and Thirst survival mechanics with damage and game-over behavior.
+              </li>
+              <li>
+                Added persistent death drops saved at random world coordinates.
+              </li>
+              <li>
+                Categorised player stats, inventory, furnitures, and tools into unlockable tabs.
+              </li>
+              <li>
+                Categorised actions into unlockable Actions, Crafting, Building, and Hunting tabs.
+              </li>
+            </ul>
+
             <h4>EXPERIMENTAL - 0.0.3a <i>[2nd of August, 2026]</i></h4>
             <ul>
               <li>

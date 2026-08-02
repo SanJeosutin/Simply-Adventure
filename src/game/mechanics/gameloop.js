@@ -18,6 +18,9 @@ export default class GameLoop {
       maxUpdates: 300,
       ...options
     };
+    this.onPanic = options.onPanic ?? (() => {});
+    this.onRender = options.onRender ?? (() => {});
+    this.onUpdate = options.onUpdate ?? (() => {});
     
     this.tick = this.tick.bind(this);
   }
@@ -62,6 +65,10 @@ export default class GameLoop {
     }
   }
   tick(time) {
+    if (!this.isRunning) {
+      return;
+    }
+
     if (this.timing.last === null) this.timing.last = time;
     this.timing.delta = time - this.timing.last;
     this.timing.total += this.timing.delta;
@@ -73,8 +80,9 @@ export default class GameLoop {
     while (this.timing.lag >= this.options.step) {
       this.timing.lag -= this.options.step;
       this.onUpdate(this.options.step, this.timing.total);
-      this.numberOfUpdates++;
-      if (this.numberOfUpdates >= this.options.maxUpdates) {
+      numberOfUpdates++;
+      if (numberOfUpdates >= this.options.maxUpdates) {
+        this.timing.lag = 0;
         this.onPanic();
         break;
       }
@@ -82,6 +90,8 @@ export default class GameLoop {
     
     this.onRender(this.timing.lag / this.options.step);
     
-    this.frame = requestAnimationFrame(this.tick);
+    if (this.isRunning) {
+      this.frame = requestAnimationFrame(this.tick);
+    }
   }
 }

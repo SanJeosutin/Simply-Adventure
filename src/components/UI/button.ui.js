@@ -16,10 +16,17 @@ export default class Button {
         };
     }
 
-    create(btnLocation, btnName, btnTimeout = 500, btnClass = 'btn btn-info', btnLabel = null) {
+    create(
+        btnLocation,
+        btnName,
+        btnTimeout = 500,
+        btnClass = 'btn btn-info',
+        btnLabel = null,
+        btnID = null,
+    ) {
         this.btnProperties = {
             btnName: btnLabel ?? btnName.charAt(0).toUpperCase() + btnName.slice(1),
-            btnID: `${btnLocation}-${btnName}`,
+            btnID: btnID ?? `${btnLocation}-${btnName}`,
             btnClass,
             btnTimeout,
         };

@@ -151,6 +151,10 @@ function startCampFireUpkeep(stats, progress) {
 }
 
 function refuelWithLeaves(stats, progress, fireID) {
+    if (stats.status.gameOver) {
+        return false;
+    }
+
     const fire = getCampFire(stats, fireID);
 
     if (!fire || fire.active || fire.terminal) {
@@ -161,6 +165,10 @@ function refuelWithLeaves(stats, progress, fireID) {
 }
 
 function refuelWithCharcoal(stats, progress, fireID) {
+    if (stats.status.gameOver) {
+        return false;
+    }
+
     const fire = getCampFire(stats, fireID);
     const items = stats.inventory.items;
 
@@ -189,10 +197,18 @@ function refuelWithCharcoal(stats, progress, fireID) {
 
 function initializeCampFireActions(stats, progress) {
     $('#action').on('click', '[data-fire-action="leaves"]', event => {
+        if (stats.status.gameOver) {
+            return;
+        }
+
         refuelWithLeaves(stats, progress, Number(event.currentTarget.dataset.fireId));
     });
 
     $('#action').on('click', '[data-fire-action="charcoal"]', event => {
+        if (stats.status.gameOver) {
+            return;
+        }
+
         refuelWithCharcoal(stats, progress, Number(event.currentTarget.dataset.fireId));
     });
 }

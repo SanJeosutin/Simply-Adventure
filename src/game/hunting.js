@@ -39,6 +39,10 @@ function createTrap(stats) {
 }
 
 function startSpearHunt(stats, progress) {
+    if (stats.status.gameOver) {
+        return false;
+    }
+
     const settings = huntingSettings.spear;
     const action = '#action-hunt-raw-rabbit';
 
@@ -79,6 +83,10 @@ function startSpearHunt(stats, progress) {
 }
 
 function startTrapHunt(stats, progress, trapID) {
+    if (stats.status.gameOver) {
+        return false;
+    }
+
     const settings = huntingSettings.trap;
     const trap = stats.status.traps.find(currentTrap => currentTrap.id === trapID);
     const action = `#action-set-trap-${trapID}`;
@@ -131,10 +139,18 @@ function startTrapHunt(stats, progress, trapID) {
 
 function initializeHuntingActions(stats, progress) {
     $('#action').on('click', '#action-hunt-raw-rabbit', () => {
+        if (stats.status.gameOver) {
+            return;
+        }
+
         startSpearHunt(stats, progress);
     });
 
     $('#action').on('click', '[data-trap-action="hunt"]', event => {
+        if (stats.status.gameOver) {
+            return;
+        }
+
         startTrapHunt(stats, progress, Number(event.currentTarget.dataset.trapId));
     });
 }

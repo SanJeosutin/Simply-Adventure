@@ -1,3 +1,56 @@
 {
-    "inventory": {}
+    "attributes": {
+        "health": {
+            "current": 5,
+            "max": 20
+        },
+        "hunger": {
+            "current": 5,
+            "max": 20,
+            "decay": {
+                "amount": 0.5,
+                "intervalMs": 300000
+            },
+            "zeroDamage": {
+                "amount": 0.25,
+                "intervalMs": 30000
+            }
+        },
+        "thirst": {
+            "current": 15,
+            "max": 20,
+            "decay": {
+                "amount": 0.05,
+                "intervalMs": 1000
+            },
+            "zeroDamage": {
+                "amount": 0.5,
+                "intervalMs": 15000
+            }
+        }
+    },
+    "inventory": {
+        "items": {
+            "pebble": 0,
+            "flint": 0,
+            "straw": 0,
+            "stick": 0,
+            "berry": 0,
+            "leaf": 0,
+            "string": 0,
+            "rope": 0,
+            "map": 0,
+            "charcoal": 0,
+            "raw_rabbit": 0
+        },
+        "tools": {
+            "basic_spear": 0,
+            "basic_knife": 0
+        },
+        "buildings": {},
+        "furnitures": {
+            "camp_fire": 0,
+            "trap": 0
+        }
+    }
 }

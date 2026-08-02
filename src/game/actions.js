@@ -19,6 +19,10 @@ export default function initializeActions(stats, progress = new Progress()) {
     initializeHuntingActions(stats, progress);
 
     $('#action').on('click', actionIDs.scavenge, () => {
+        if (stats.status.gameOver) {
+            return;
+        }
+
         if (progress.isActive(actionIDs.scavenge)) {
             return;
         }

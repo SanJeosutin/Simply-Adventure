@@ -31,6 +31,10 @@ export default class CreateButton {
 
     createRecipe(action, stats, recipe, onComplete = () => {}) {
         $('#action').on('click', action, () => {
+            if (stats.status?.gameOver) {
+                return;
+            }
+
             if (this.activeCrafts.has(action) || this.progress.isActive(action)) {
                 return;
             }

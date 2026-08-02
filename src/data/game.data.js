@@ -1,40 +1,6 @@
 const settings = {
     debugMode: false,
-    gameVersion: 'EXPERIMENTAL - 0.0.3a',
-};
-
-const stats = {
-    status: {
-        campFires: [],
-        durability: {},
-        traps: [],
-    },
-    inventory: {
-        items: {
-            pebble: 0,
-            flint: 0,
-            straw: 0,
-            stick: 0,
-            berry: 0,
-            leaf: 0,
-            string: 0,
-            rope: 0,
-            map: 0,
-            charcoal: 0,
-            raw_rabbit: 0,
-        },
-        tools: {
-            basic_spear: 0,
-            basic_knife: 0,
-        },
-        buildings: {
-
-        },
-        furnitures: {
-            camp_fire: 0,
-            trap: 0,
-        }
-    }
+    gameVersion: 'EXPERIMENTAL - 0.0.3b',
 };
 
 const actionIDs = {
@@ -175,7 +141,6 @@ function getCraftActionID(recipeID) {
 
 export {
     settings,
-    stats,
     actionIDs,
     scavengeItems,
     scavengeSettings,
